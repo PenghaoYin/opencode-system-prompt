@@ -60,12 +60,16 @@ jobs:
           actual="$(./packages/opencode/dist/opencode-linux-x64/bin/opencode --version)"
           test "$actual" = "${{ steps.version.outputs.version }}"
 
-      - name: Package release asset
+      - name: Package release assets
         shell: bash
         run: |
-          asset="opencode-linux-x64-${{ steps.version.outputs.version }}.tar.gz"
-          tar -czf "$asset" -C packages/opencode/dist/opencode-linux-x64/bin opencode
-          sha256sum "$asset" > "$asset.sha256"
+          raw_asset="opencode-linux-x64-${{ steps.version.outputs.version }}.bin"
+          tar_asset="opencode-linux-x64-${{ steps.version.outputs.version }}.tar.gz"
+          cp packages/opencode/dist/opencode-linux-x64/bin/opencode "$raw_asset"
+          chmod +x "$raw_asset"
+          sha256sum "$raw_asset" > "$raw_asset.sha256"
+          tar -czf "$tar_asset" -C packages/opencode/dist/opencode-linux-x64/bin opencode
+          sha256sum "$tar_asset" > "$tar_asset.sha256"
 
       - name: Create or update release
         shell: bash
@@ -75,6 +79,8 @@ jobs:
               --title "${{ steps.version.outputs.tag }}" \
               --notes "OpenCode fork release for runtime system prompt support."
           gh release upload "${{ steps.version.outputs.tag }}" \
+            "opencode-linux-x64-${{ steps.version.outputs.version }}.bin" \
+            "opencode-linux-x64-${{ steps.version.outputs.version }}.bin.sha256" \
             "opencode-linux-x64-${{ steps.version.outputs.version }}.tar.gz" \
             "opencode-linux-x64-${{ steps.version.outputs.version }}.tar.gz.sha256" \
             --clobber
