@@ -656,11 +656,21 @@ export const Error = define({
   },
 })
 
+export const SystemPrompt = define({
+  type: "session.system_prompt",
+  schema: {
+    sessionID: SessionID,
+    messageID: MessageID,
+    system: Schema.Array(Schema.String),
+  },
+})
+
 export const Event = {
   ...events,
   PartDelta,
   Diff,
   Error,
+  SystemPrompt,
   Definitions: inventory(
     events.Created,
     events.Updated,
@@ -672,5 +682,6 @@ export const Event = {
     PartDelta,
     Diff,
     Error,
+    SystemPrompt,
   ),
 }

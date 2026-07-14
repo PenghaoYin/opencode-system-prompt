@@ -120,8 +120,21 @@ describe("opencode run (non-interactive subprocess)", () => {
           expect(typeof evt.type).toBe("string")
           expect(typeof evt.sessionID).toBe("string")
         }
-        expect(events.map((event) => event.type)).toEqual(["step_start", "text", "step_finish"])
+        expect(events.map((event) => event.type)).toEqual(["system_prompt", "step_start", "text", "step_finish"])
+        expect(events[0]).toEqual({
+          type: "system_prompt",
+          timestamp: expect.any(Number),
+          sessionID: expect.any(String),
+          messageID: expect.any(String),
+          system: expect.any(Array),
+        })
+        expect(events[0]?.system.join("\n")).toContain("Working directory:")
         expect(events.map(({ timestamp: _, sessionID: __, ...event }) => event)).toEqual([
+          {
+            type: "system_prompt",
+            messageID: expect.any(String),
+            system: expect.any(Array),
+          },
           { type: "step_start", part: expect.objectContaining({ type: "step-start" }) },
           {
             type: "text",
@@ -183,6 +196,7 @@ describe("opencode run (non-interactive subprocess)", () => {
         expect(result.exitCode).toBe(0)
         const events = opencode.parseJsonEvents(result.stdout)
         expect(events.map((event) => event.type)).toEqual([
+          "system_prompt",
           "step_start",
           "reasoning",
           "text",
@@ -228,6 +242,7 @@ describe("opencode run (non-interactive subprocess)", () => {
         const events = opencode.parseJsonEvents(result.stdout)
         expect(result.exitCode).toBe(0)
         expect(events.map((event) => event.type)).toEqual([
+          "system_prompt",
           "step_start",
           "text",
           "tool_use",
@@ -235,7 +250,9 @@ describe("opencode run (non-interactive subprocess)", () => {
           "step_start",
           "step_finish",
         ])
-        expect(events[1]?.part).toEqual(expect.objectContaining({ type: "text", text: "partial json" }))
+        expect(events.find((event) => event.type === "text")?.part).toEqual(
+          expect.objectContaining({ type: "text", text: "partial json" }),
+        )
         expect(events.at(-1)?.part).toEqual(expect.objectContaining({ type: "step-finish", reason: "unknown" }))
       }),
     60_000,

@@ -43,6 +43,31 @@
 
 ---
 
+## Fork Notice
+
+This repository is a minimal fork of `anomalyco/opencode`.
+
+Its only goal is to make `opencode run --json` emit one extra `system_prompt` event before the normal generation events, so the effective runtime system prompt can be inspected or collected.
+
+Example event:
+
+```json
+{
+  "type": "system_prompt",
+  "messageID": "msg_xxx",
+  "system": ["..."]
+}
+```
+
+Build:
+
+```bash
+bun install
+./packages/opencode/script/build.ts --single
+```
+
+If the build machine is not ready, it is usually faster to hand the repo to a coding agent and ask it to install missing dependencies and keep going until the binary is built.
+
 ### Installation
 
 ```bash

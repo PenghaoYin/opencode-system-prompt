@@ -696,6 +696,7 @@ export const RunCommand = effectCmd({
         // created, and replies issued from inside the loop must use that client.
         async function loop(client: OpencodeClient, events: Awaited<ReturnType<typeof sdk.event.subscribe>>) {
           const toggles = new Map<string, boolean>()
+          let emittedSystemPrompt = false
           let error: string | undefined
 
           for await (const event of events.stream) {
@@ -783,6 +784,16 @@ export const RunCommand = effectCmd({
               error = error ? error + EOL + err : err
               if (emit("error", { error: props.error })) continue
               UI.error(err)
+            }
+
+            if (event.type === "session.system_prompt") {
+              const props = event.properties
+              if (props.sessionID !== sessionID) continue
+              const system = props.system.join("\n")
+              if (system.startsWith("You are a title generator.")) continue
+              if (emittedSystemPrompt) continue
+              emittedSystemPrompt = true
+              if (emit("system_prompt", { messageID: props.messageID, system: props.system })) continue
             }
 
             if (

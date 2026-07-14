@@ -18,6 +18,7 @@ describe("legacy public event schemas", () => {
       "message.part.delta",
       "session.diff",
       "session.error",
+      "session.system_prompt",
     ])
     const durable = SessionV1.Event.Definitions.filter((event) => event.durable !== undefined)
     expect(durable).toHaveLength(7)
@@ -30,6 +31,7 @@ describe("legacy public event schemas", () => {
       SessionV1.PartDelta.type,
       SessionV1.Diff.type,
       SessionV1.Error.type,
+      SessionV1.SystemPrompt.type,
       PermissionV1.Event.Asked.type,
       PermissionV1.Event.Replied.type,
       QuestionV1.Event.Asked.type,
@@ -41,6 +43,7 @@ describe("legacy public event schemas", () => {
       "message.part.delta",
       "session.diff",
       "session.error",
+      "session.system_prompt",
       "permission.asked",
       "permission.replied",
       "question.asked",

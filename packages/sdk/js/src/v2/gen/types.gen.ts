@@ -51,6 +51,7 @@ export type Event =
   | EventMessagePartDelta
   | EventSessionDiff
   | EventSessionError
+  | EventSessionSystemPrompt
   | EventInstallationUpdated
   | EventInstallationUpdateAvailable
   | EventFileEdited
@@ -1223,6 +1224,15 @@ export type GlobalEvent = {
             | ContextOverflowError
             | ContentFilterError
             | ApiError
+        }
+      }
+    | {
+        id: string
+        type: "session.system_prompt"
+        properties: {
+          sessionID: string
+          messageID: string
+          system: Array<string>
         }
       }
     | {
@@ -6682,6 +6692,16 @@ export type EventSessionError = {
       | ContextOverflowError
       | ContentFilterError
       | ApiError
+  }
+}
+
+export type EventSessionSystemPrompt = {
+  id: string
+  type: "session.system_prompt"
+  properties: {
+    sessionID: string
+    messageID: string
+    system: Array<string>
   }
 }
 

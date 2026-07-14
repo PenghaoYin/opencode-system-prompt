@@ -112,6 +112,12 @@ const live: Layer.Layer<
         isWorkflow,
       })
 
+      yield* events.publish(SessionV1.Event.SystemPrompt, {
+        sessionID: input.sessionID,
+        messageID: input.user.id,
+        system: prepared.system,
+      })
+
       // Wire up toolExecutor for DWS workflow models so that tool calls
       // from the workflow service are executed via opencode's tool system
       // and results sent back over the WebSocket.
