@@ -66,6 +66,8 @@ bun install
 ./packages/opencode/script/build.ts --single
 ```
 
+Release tags for this fork use `vX.Y.Z-sp`.
+
 If the build machine is not ready, it is usually faster to hand the repo to a coding agent and ask it to install missing dependencies and keep going until the binary is built.
 
 ### Installation
